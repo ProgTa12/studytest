@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 청소기 - 스마트 클리닝 솔루션</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 기본 스타일 및 폰트 설정 */
+        :root {
+            --primary-color: #A3D8F4;
+            --secondary-color: #B2F4E9;
+            --accent-color: #FFC0CB;
+            --text-dark: #333;
+            --text-light: #fff;
+            --bg-light: #F9F9F9;
+            --bg-white: #fff;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Noto Sans KR', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        h1, h2 {
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        /* 버튼 스타일 */
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .cta-button:hover {
+            background-color: #8CC3E4;
+        }
+        .center-text {
+            text-align: center;
+        }
+        /* 헤더 */
+        .main-header {
+            background-color: var(--bg-white);
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        .main-nav ul li {
+            margin-left: 30px;
+        }
+        .main-nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+        .main-nav a:hover {
+            color: var(--primary-color);
+        }
+        /* 히어로 섹션 */
+        .hero-section {
+            /* 배경 이미지와 어두운 오버레이를 적용하여 가독성 향상 */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('배경화면.jpg');
+            background-size: contain; /* 이미지가 잘리지 않고 전체가 보이도록 수정 */
+            background-repeat: no-repeat; /* 이미지가 반복되지 않도록 수정 */
+            background-position: center;
+            padding: 80px 0;
+            text-align: center;
+            color: var(--text-light);
+        }
+        .hero-section h1 {
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        .hero-section p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        .product-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+        /* 섹션 공통 스타일 */
+        section {
+            padding: 80px 0;
+        }
+        section:nth-of-type(even) {
+            background-color: var(--bg-white);
+        }
+        /* 기능 섹션 */
+        .feature-item-row {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        .feature-item-row.reverse {
+            flex-direction: row-reverse;
+        }
+        .feature-item-content {
+            flex: 1;
+        }
+        .feature-item-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        /* 수정: 가독성 개선을 위해 리스트 스타일 추가 */
+        .feature-item-content ul,
+        .detail-item ul {
+            list-style-type: '✓ '; /* 체크마크 스타일 */
+            padding-left: 20px;
+            text-align: left;
+        }
+        .feature-item-content ul li,
+        .detail-item ul li {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        .feature-image {
+            flex: 1;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        /* 상세 정보 섹션 */
+        #product-details .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+            text-align: left;
+        }
+        #product-details .detail-item {
+            background-color: var(--bg-white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        #product-details .detail-item h4 {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        /* 상품 정보 고시 섹션 */
+        #product-disclosure .disclosure-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            margin-top: 40px;
+            text-align: left;
+        }
+        #product-disclosure .disclosure-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        #product-disclosure .disclosure-item:last-child {
+            border-bottom: none;
+        }
+        #product-disclosure .disclosure-label {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+        #product-disclosure .disclosure-value {
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+        /* 후기 섹션 */
+        #reviews {
+            background-color: var(--bg-light);
+        }
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        .review-card {
+            background-color: var(--bg-white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        .review-card:hover {
+            transform: translateY(-10px);
+        }
+        /* 후기 인용 부호 아이콘 스타일 */
+        .review-quote-icon {
+            font-family: serif;
+            font-size: 3rem;
+            color: var(--primary-color);
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            opacity: 0.2;
+        }
+        .review-card p {
+            font-style: italic;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .review-card .reviewer-name {
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: right;
+            margin-top: 15px;
+        }
+        /* CTA 섹션 */
+        .cta-section {
+            background-color: var(--primary-color);
+            padding: 80px 0;
+            text-align: center;
+        }
+        .cta-section h2 {
+            color: var(--text-dark);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        .cta-section p {
+            color: var(--text-dark);
+            margin-bottom: 30px;
+        }
+        /* 푸터 */
+        .main-footer {
+            background-color: var(--text-dark);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 40px 0;
+            font-size: 0.9rem;
+        }
+        .main-footer .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .main-footer .social-icons {
+            margin-top: 15px;
+        }
+        .main-footer .social-icons a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            margin: 0 10px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .main-footer .social-icons a:hover {
+            color: var(--primary-color);
+        }
+        .main-footer p {
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+            .main-header .container {
+                flex-direction: column;
+            }
+            .main-nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .main-nav ul li {
+                margin: 5px 10px;
+            }
+            .hero-section {
+                padding: 50px 0;
+            }
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            .hero-section p {
+                font-size: 1rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+            .feature-item-row {
+                flex-direction: column;
+            }
+            .feature-item-row.reverse {
+                flex-direction: column;
+            }
+            .feature-item-content h3, .feature-item-content p {
+                text-align: center;
+            }
+            .feature-image {
+                width: 100%;
+            }
+            #product-disclosure .disclosure-grid {
+                grid-template-columns: 1fr;
+            }
+            #product-disclosure .disclosure-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            #product-disclosure .disclosure-label {
+                margin-bottom: 5px;
+            }
+            .main-footer .container {
+                flex-direction: column;
+            }
+            .main-footer .social-icons {
+                align-self: center;
+            }
+            .main-footer .copyright-info {
+                text-align: center;
+            }
+        }
+        /* 데스크톱 반응형 */
+        @media (min-width: 769px) {
+            .main-footer .container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .main-footer .social-icons {
+                margin-top: 0;
+            }
+            .main-footer .copyright-info {
+                text-align: left;
+            }
+        }
+
+        /* 구매 페이지 모달 스타일 */
+        .purchase-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .purchase-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .purchase-modal {
+            background-color: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .purchase-modal-overlay.active .purchase-modal {
+            transform: scale(1);
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .purchase-container {
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 768px) {
+            .purchase-container {
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 메인 랜딩 페이지 섹션 -->
+    <header class="main-header">
+        <div class="container">
+            <a href="#" class="logo">AI Cleaner</a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#intro">제품 소개</a></li>
+                    <li><a href="#features">기능 보기</a></li>
+                    <li><a href="#reviews">후기</a></li>
+                    <li><a href="#product-details">제품 상세</a></li>
+                    <li><a href="#product-disclosure">상품 정보 고시</a></li>
+                    <li><a href="#contact">문의하기</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section" id="intro">
+            <div class="container">
+                <h1>AI 청소기</h1>
+                <p>실시간으로 오염물질을 감지하고 즉각적으로 처리하는, 당신의 삶을 바꾸는 스마트 클리닝 솔루션.</p>
+                <button class="cta-button" id="buy-now-btn">지금 구매하기</button>
+                <img src="https://via.placeholder.com/600x400/A3D8F4/FFFFFF?text=AI+Cleaner+Product+Image" alt="AI 청소기 제품 이미지" class="product-image">
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="container">
+                <h2>주요 기능</h2>
+                <p>AI 청소기의 혁신적인 기술을 확인해 보세요.</p>
+                <!-- 기능 섹션 1: 이미지 -> 텍스트 -->
+                <div class="feature-item-row">
+                    <img src="https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict" alt="AI 스마트 방범 및 오염물질 특정 기능" class="feature-image">
+                    <div class="feature-item-content">
+                        <h3>스마트 방범 및 오염물질 특정</h3>
+                        <!-- 수정: 가독성 높은 리스트 형식으로 변경 -->
+                        <ul>
+                            <li><strong>AI 비전 기술</strong>로 실시간 외부 침입 감지</li>
+                            <li>쓰레기 및 오염물질을 <strong>정확하게 인식</strong> 및 특정</li>
+                            <li>집안 곳곳을 꼼꼼하게 모니터링</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 기능 섹션 2: 텍스트 -> 이미지 -->
+                <div class="feature-item-row reverse">
+                    <img src="https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict" alt="AI 즉각적인 자동 청소 기능" class="feature-image">
+                    <div class="feature-item-content">
+                        <h3>즉각적인 자동 청소</h3>
+                        <!-- 수정: 가독성 높은 리스트 형식으로 변경 -->
+                        <ul>
+                            <li>오염물질 감지 즉시 <strong>자동으로 청소 시작</strong></li>
+                            <li>사용자가 신경 쓸 필요 없는 <strong>완전 자동화 시스템</strong></li>
+                            <li>언제나 깨끗한 환경을 유지</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 기능 섹션 3: 이미지 -> 텍스트 -->
+                <div class="feature-item-row">
+                    <img src="https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict" alt="AI 무소음 설계 기능" class="feature-image">
+                    <div class="feature-item-content">
+                        <h3>소음 없는 무소음 설계</h3>
+                        <!-- 수정: 가독성 높은 리스트 형식으로 변경 -->
+                        <ul>
+                            <li><strong>최첨단 무소음 기술</strong>로 조용한 환경 유지</li>
+                            <li>밤에도 걱정 없는 <strong>저소음 청소</strong></li>
+                            <li>편안하고 조용한 일상을 경험하세요</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reviews">
+            <div class="container">
+                <h2>실제 사용자 후기</h2>
+                <div class="review-grid">
+                    <div class="review-card">
+                        <span class="review-quote-icon">&#8220;</span>
+                        <p>퇴근 후 집에 와보면 항상 <strong>깨끗해서 너무 좋아요!</strong> 소리도 거의 안 나서 밤에 돌려도 부담 없습니다. 정말 추천해요!</p>
+                        <div class="reviewer-name">- 김민지 고객님</div>
+                    </div>
+                    <div class="review-card">
+                        <span class="review-quote-icon">&#8220;</span>
+                        <p>강아지가 털을 많이 흘려서 걱정이었는데, AI 청소기가 <strong>알아서 다 처리해줘서</strong> 삶의 질이 확 올라갔습니다. 최고예요!</p>
+                        <div class="reviewer-name">- 박준형 고객님</div>
+                    </div>
+                    <div class="review-card">
+                        <span class="review-quote-icon">&#8220;</span>
+                        <p>설치도 간단하고 사용법도 직관적이라서 기계치인 저도 쉽게 사용하고 있어요. 특히 <strong>쓰레기를 감지해서 바로 청소하는 기능</strong>이 놀라워요.</p>
+                        <div class="reviewer-name">- 이수연 고객님</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="product-details">
+            <div class="container">
+                <h2>제품 상세 정보</h2>
+                <p>AI 청소기의 기술적인 스펙과 특징을 자세히 확인하세요.</p>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <h4>배터리 및 충전</h4>
+                        <!-- 수정: 가독성 높은 리스트 형식으로 변경 -->
+                        <ul>
+                            <li><strong>120분</strong> 연속 사용 가능한 대용량 배터리</li>
+                            <li>배터리 부족 시 <strong>자동으로 복귀하여 충전</strong></li>
+                        </ul>
+                    </div>
+                    <div class="detail-item">
+                        <h4>AI 센서 기술</h4>
+                        <!-- 수정: 가독성 높은 리스트 형식으로 변경 -->
+                        <ul>
+                            <li><strong>고정밀 AI 센서</strong>로 장애물과 오염물질 식별</li>
+                            <li><strong>청소 구역을 스스로 학습</strong>하여 최적의 경로 설계</li>
+                        </ul>
+                    </div>
+                    <div class="detail-item">
+                        <h4>청소 모드</h4>
+                        <!-- 수정: 가독성 높은 리스트 형식으로 변경 -->
+                        <ul>
+                            <li><strong>일반, 집중, 예약</strong> 등 다양한 청소 모드 지원</li>
+                            <li>모든 기능은 <strong>스마트폰 앱으로 편리하게 제어</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="product-disclosure">
+            <div class="container">
+                <h2>상품 정보 제공 고시</h2>
+                <p>전자상거래 등에서의 상품 정보 제공 고시에 따라 작성된 정보입니다.</p>
+                <div class="disclosure-grid">
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">상품번호</span>
+                        <span class="disclosure-value">AICLEANER-2024-001</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">상품상태</span>
+                        <span class="disclosure-value">새상품</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">부가세 면세여부</span>
+                        <span class="disclosure-value">과세상품</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">영수증발행</span>
+                        <span class="disclosure-value">발행가능 - 신용카드 전표, 온라인 현금영수증</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">사업자구분</span>
+                        <span class="disclosure-value">법인사업자</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">브랜드</span>
+                        <span class="disclosure-value">AI Cleaner</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">원산지</span>
+                        <span class="disclosure-value">대한민국</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">품명 및 모델명</span>
+                        <span class="disclosure-value">AI Cleaner V1.0</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">KC 인증정보</span>
+                        <span class="disclosure-value">제품 페이지 내 표기</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">정격전압/소비전력</span>
+                        <span class="disclosure-value">AC 220V / 50W</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">에너지소비효율등급</span>
+                        <span class="disclosure-value">해당사항 없음</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">동일모델의 출시년월</span>
+                        <span class="disclosure-value">2024년 5월</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">제조자/수입자</span>
+                        <span class="disclosure-value">AI Tech Co., Ltd. / (주)AI 클리너</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">제조국</span>
+                        <span class="disclosure-value">대한민국</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">크기/무게</span>
+                        <span class="disclosure-value">350 x 350 x 100mm / 3.5kg</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">주요사양</span>
+                        <span class="disclosure-value">AI 비전 센서, 무선 충전, 스마트 앱 연동</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">품질보증기준</span>
+                        <span class="disclosure-value">관련 법 및 소비자분쟁해결 기준에 따름</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">A/S 책임자와 전화번호</span>
+                        <span class="disclosure-value">AI 클리너 고객센터 1644-1234</span>
+                    </div>
+                    <div class="disclosure-item">
+                        <span class="disclosure-label">주문후 예상 배송기간</span>
+                        <span class="disclosure-value">평일 기준 2~3일 소요 (도서산간 지역 제외)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section" id="cta-buy">
+            <div class="container">
+                <h2>당신의 생활을 더 스마트하게 바꿔보세요</h2>
+                <p>AI 청소기가 선사하는 편리하고 깨끗한 일상을 경험하세요.</p>
+                <button class="cta-button" id="buy-now-btn-footer">지금 구매하기</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer" id="contact">
+        <div class="container">
+            <div class="copyright-info">
+                <p>&copy; 2025 AI Cleaner. All rights reserved.</p>
+                <p>문의: contact@aicleaner.com | 070-1234-5678</p>
+            </div>
+            <div class="social-icons">
+                <!-- SNS 아이콘 링크 (예시) -->
+                <!-- 폰트어썸 아이콘을 사용하려면 외부 라이브러리 추가 필요 -->
+                <!-- 여기서는 텍스트로 대체 -->
+                <a href="#">[페이스북]</a>
+                <a href="#">[인스타그램]</a>
+                <a href="#">[유튜브]</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 구매 페이지 모달 오버레이 -->
+    <div id="purchase-modal-overlay" class="purchase-modal-overlay">
+        <div class="purchase-modal rounded-xl shadow-lg max-w-6xl mx-auto overflow-hidden">
+            <span id="close-modal-btn" class="close-btn">&times;</span>
+            <div class="purchase-container bg-white">
+                
+                <!-- 왼쪽: 상품 이미지 영역 -->
+                <div class="w-full md:w-1/2 p-4 md:p-8 flex items-center justify-center bg-gray-50">
+                    <img src="https://placehold.co/600x600/A3D8F4/FFFFFF?text=AI+Cleaner+Product+Image" alt="AI 청소기 제품 이미지" class="rounded-lg shadow-md max-h-full">
+                </div>
+
+                <!-- 오른쪽: 상품 정보 및 옵션 선택 영역 -->
+                <div class="w-full md:w-1/2 p-6 md:p-12 space-y-6">
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 text-left">AI 청소기</h1>
+                    <p class="text-xl text-gray-600 text-left">스마트 클리닝 솔루션</p>
+
+                    <div class="py-4 border-t border-b border-gray-200">
+                        <span class="text-2xl font-bold text-blue-500">500,000원</span>
+                        <span class="text-sm text-gray-500"> (수량별 가격)</span>
+                    </div>
+
+                    <!-- 수량 선택 섹션 -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-700 text-left">수량 선택</h3>
+                        <div class="flex items-center space-x-4">
+                            <button id="decrement-btn" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full transition-colors hover:bg-gray-300">-</button>
+                            <span id="quantity" class="text-2xl font-bold text-gray-800">1</span>
+                            <button id="increment-btn" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-full transition-colors hover:bg-gray-300">+</button>
+                        </div>
+                    </div>
+
+                    <!-- 상품 전달 방법 선택 섹션 -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-700 text-left">상품 전달 방법</h3>
+                        <div class="flex flex-col space-y-2">
+                            <label class="inline-flex items-center text-gray-700">
+                                <input type="radio" name="deliveryMethod" value="pickup" class="form-radio text-blue-500 h-5 w-5" checked>
+                                <span class="ml-2">직접 찾아가기 (무료)</span>
+                            </label>
+                            <label class="inline-flex items-center text-gray-700">
+                                <input type="radio" name="deliveryMethod" value="delivery" class="form-radio text-blue-500 h-5 w-5">
+                                <span class="ml-2">배달 (3,000원)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 최종 가격 표시 -->
+                    <div class="bg-blue-100 p-4 rounded-lg">
+                        <h4 class="text-xl font-bold text-gray-800 text-left">총 결제 금액: <span id="total-price" class="text-blue-600">500,000원</span></h4>
+                    </div>
+
+                    <!-- 구매하기 버튼 -->
+                    <button class="w-full bg-blue-500 text-white font-bold py-4 rounded-full text-xl transition-colors hover:bg-blue-600">구매하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM 요소 가져오기
+        const buyNowBtn = document.getElementById('buy-now-btn');
+        const buyNowBtnFooter = document.getElementById('buy-now-btn-footer');
+        const purchaseModalOverlay = document.getElementById('purchase-modal-overlay');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+
+        const decrementBtn = document.getElementById('decrement-btn');
+        const incrementBtn = document.getElementById('increment-btn');
+        const quantitySpan = document.getElementById('quantity');
+        const totalPriceSpan = document.getElementById('total-price');
+        const deliveryRadios = document.querySelectorAll('input[name="deliveryMethod"]');
+
+        // 기본 상품 가격과 배송비
+        const basePrice = 500000;
+        const deliveryFee = 3000;
+        let currentQuantity = 1;
+
+        // 가격 업데이트 함수
+        function updatePrice() {
+            let selectedDeliveryFee = 0;
+            if (document.querySelector('input[name="deliveryMethod"]:checked').value === 'delivery') {
+                selectedDeliveryFee = deliveryFee;
+            }
+            const total = (basePrice * currentQuantity) + selectedDeliveryFee;
+            totalPriceSpan.textContent = total.toLocaleString() + '원';
+        }
+
+        // 수량 증가 버튼 이벤트 리스너
+        incrementBtn.addEventListener('click', () => {
+            currentQuantity++;
+            quantitySpan.textContent = currentQuantity;
+            updatePrice();
+        });
+
+        // 수량 감소 버튼 이벤트 리스너
+        decrementBtn.addEventListener('click', () => {
+            if (currentQuantity > 1) { // 수량은 1보다 작아질 수 없음
+                currentQuantity--;
+                quantitySpan.textContent = currentQuantity;
+                updatePrice();
+            }
+        });
+
+        // 배송 방법 라디오 버튼 이벤트 리스너
+        deliveryRadios.forEach(radio => {
+            radio.addEventListener('change', updatePrice);
+        });
+        
+        // 모달 열기 함수
+        function openModal() {
+            purchaseModalOverlay.classList.add('active');
+            updatePrice();
+        }
+
+        // 모달 닫기 함수
+        function closeModal() {
+            purchaseModalOverlay.classList.remove('active');
+        }
+
+        // "지금 구매하기" 버튼에 이벤트 리스너 추가
+        buyNowBtn.addEventListener('click', openModal);
+        buyNowBtnFooter.addEventListener('click', openModal);
+
+        // 오버레이 클릭 시 모달 닫기
+        purchaseModalOverlay.addEventListener('click', (e) => {
+            if (e.target.id === 'purchase-modal-overlay') {
+                closeModal();
+            }
+        });
+        
+        // 초기 가격 설정
+        updatePrice();
+
+    </script>
+</body>
+</html>
