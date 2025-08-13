@@ -105,14 +105,43 @@
         }
         /* 히어로 섹션 */
         .hero-section {
-            /* 배경 이미지와 어두운 오버레이를 적용하여 가독성 향상 */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('배경화면.jpg');
-            background-size: contain; /* 이미지가 잘리지 않고 전체가 보이도록 수정 */
-            background-repeat: no-repeat; /* 이미지가 반복되지 않도록 수정 */
-            background-position: center;
+            /* 배경 이미지 대신 img 태그를 사용하기 위해 position: relative 설정 */
+            position: relative;
             padding: 80px 0;
             text-align: center;
             color: var(--text-light);
+            overflow: hidden;
+            min-height: 500px; /* 콘텐츠가 적을 경우를 대비해 최소 높이 설정 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-bg-image {
+            /* img 태그를 사용하여 배경처럼 꽉 채우기 */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지가 잘리지 않고 영역을 꽉 채우도록 설정 */
+            z-index: 1; /* 배경 이미지이므로 가장 뒤에 배치 */
+        }
+        .hero-overlay {
+            /* 텍스트 가독성을 위한 어두운 오버레이 */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2; /* 이미지 위에, 콘텐츠 아래에 배치 */
+        }
+        .hero-content {
+            /* 모든 콘텐츠를 이미지와 오버레이 위에 배치 */
+            position: relative;
+            z-index: 3;
+            width: 100%;
         }
         .hero-section h1 {
             font-size: 2.5rem;
@@ -465,7 +494,12 @@
 
     <main>
         <section class="hero-section" id="intro">
-            <div class="container">
+            <!-- 배경 이미지: `img` 태그로 변경하고 `object-fit`을 사용해 꽉 채움 -->
+            <img src="배경화면.jpg" alt="배경 이미지" class="hero-bg-image">
+            <!-- 텍스트 가독성을 위한 어두운 오버레이 -->
+            <div class="hero-overlay"></div>
+            <!-- 콘텐츠 영역: 이미지와 오버레이 위에 위치하도록 `z-index`를 줌 -->
+            <div class="container hero-content">
                 <h1>AI 청소기</h1>
                 <p>실시간으로 오염물질을 감지하고 즉각적으로 처리하는, 당신의 삶을 바꾸는 스마트 클리닝 솔루션.</p>
                 <button class="cta-button" id="buy-now-btn">지금 구매하기</button>
